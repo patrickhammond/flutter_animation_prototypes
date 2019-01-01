@@ -158,18 +158,28 @@ class DiagnosisCategoriesButton extends StatelessWidget {
   }
 
   void navigateToDetails(BuildContext context) {
-    Navigator.of(context).push(PageRouteBuilder<void>(
-      transitionDuration: Duration(milliseconds: 7500),
-      pageBuilder: (
-        BuildContext context,
-        Animation<double> primaryAnimation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return LegendDetailScreen(
-          title: text,
-          color: color,
-        );
-      },
-    ));
+    Navigator.push(context, CustomMaterialPageRoute(builder: (_) {
+       return LegendDetailScreen(title: text, color: color,); 
+    }));
+    // Navigator.of(context).push(PageRouteBuilder<void>(
+    //   transitionDuration: Duration(milliseconds: 7500),
+    //   pageBuilder: (
+    //     BuildContext context,
+    //     Animation<double> primaryAnimation,
+    //     Animation<double> secondaryAnimation,
+    //   ) {
+    //     return LegendDetailScreen(
+    //       title: text,
+    //       color: color,
+    //     );
+    //   },
+    // ));
   }
+}
+
+class CustomMaterialPageRoute extends MaterialPageRoute {
+  CustomMaterialPageRoute({Key key, WidgetBuilder builder}): super(builder: builder);
+
+  @override
+  Duration get transitionDuration => Duration(milliseconds: 750);
 }
