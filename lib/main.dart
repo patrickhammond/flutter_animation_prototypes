@@ -1,6 +1,8 @@
 import 'package:expanding_page_prototype/widgets/legend.dart';
 import 'package:flutter/material.dart';
 
+final RouteObserver<PageRoute> _routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   runApp(MyApp());
 }
@@ -30,11 +32,62 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class LegendDetailScreen extends StatelessWidget {
+class LegendDetailScreen extends StatefulWidget {
   final String title;
   final Color color;
 
   LegendDetailScreen({Key key, @required this.title, @required this.color});
+
+  @override
+  State<StatefulWidget> createState() =>
+      _LegendDetailScreenState(title: title, color: color);
+}
+
+class _LegendDetailScreenState extends State<LegendDetailScreen>
+    with RouteAware, TickerProviderStateMixin {
+  final String title;
+  final Color color;
+
+  AnimationController controller;
+  Animation<double> animation;
+
+  _LegendDetailScreenState(
+      {Key key, @required this.title, @required this.color});
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    animation = CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeIn,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void dispose() {
+    _routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPush() {
+    controller.forward();
+  }
+
+  @override
+  void didPop() {
+    controller.reverse();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +96,35 @@ class LegendDetailScreen extends StatelessWidget {
         alignment: Alignment.topCenter,
         width: double.infinity,
         height: double.infinity,
-        child: LegendItem(
-          text: title,
-          color: color,
-          transitionPercent: 1.0,
+        child: Stack(
+          children: [
+            LegendItem(
+              text: title,
+              color: color,
+              transitionPercent: 1.0,
+            ),
+            FadeTransition(
+              opacity: animation,
+              child: AppBar(
+                title: Text(title),
+                centerTitle: true,
+                backgroundColor: const Color(0x00000000),
+                elevation: 0.0,
+                leading: Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      tooltip:
+                          MaterialLocalizations.of(context).closeButtonLabel,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -158,27 +236,23 @@ class DiagnosisCategoriesButton extends StatelessWidget {
   }
 
   void navigateToDetails(BuildContext context) {
-    Navigator.push(context, CustomMaterialPageRoute(builder: (_) {
-       return LegendDetailScreen(title: text, color: color,); 
-    }));
-    // Navigator.of(context).push(PageRouteBuilder<void>(
-    //   transitionDuration: Duration(milliseconds: 7500),
-    //   pageBuilder: (
-    //     BuildContext context,
-    //     Animation<double> primaryAnimation,
-    //     Animation<double> secondaryAnimation,
-    //   ) {
-    //     return LegendDetailScreen(
-    //       title: text,
-    //       color: color,
-    //     );
-    //   },
-    // ));
+    Navigator.push(
+      context,
+      CustomMaterialPageRoute(
+        builder: (_) {
+          return LegendDetailScreen(
+            title: text,
+            color: color,
+          );
+        },
+      ),
+    );
   }
 }
 
 class CustomMaterialPageRoute extends MaterialPageRoute {
-  CustomMaterialPageRoute({Key key, WidgetBuilder builder}): super(builder: builder);
+  CustomMaterialPageRoute({Key key, WidgetBuilder builder})
+      : super(builder: builder);
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 750);

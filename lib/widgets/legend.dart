@@ -133,7 +133,7 @@ class _LegendIndicator extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     var circleSize = 20.0 * inverseTransitionPercent; // 20.0 --> 0.0
     var width = circleSize + screenWidth * transitionPercent; // 20.0 --> sw
-    var height = circleSize + (400.0 * transitionPercent); // 20.0 --> 400.0
+    var height = circleSize + (325.0 * transitionPercent); // 20.0 --> 400.0
 
     return Container(
       child: CustomPaint(
