@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomeScreen(),
+      navigatorObservers: [_routeObserver],
     );
   }
 }
@@ -44,7 +45,7 @@ class LegendDetailScreen extends StatefulWidget {
 }
 
 class _LegendDetailScreenState extends State<LegendDetailScreen>
-    with RouteAware, TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final String title;
   final Color color;
 
@@ -58,7 +59,7 @@ class _LegendDetailScreenState extends State<LegendDetailScreen>
   void initState() {
     super.initState();
     controller = AnimationController(
-      duration: const Duration(milliseconds: 750),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     animation = CurvedAnimation(
@@ -68,64 +69,50 @@ class _LegendDetailScreenState extends State<LegendDetailScreen>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _routeObserver.subscribe(this, ModalRoute.of(context));
-  }
-
-  @override
-  void dispose() {
-    _routeObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  void didPush() {
-    controller.forward();
-  }
-
-  @override
-  void didPop() {
-    controller.reverse();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        alignment: Alignment.topCenter,
-        width: double.infinity,
-        height: double.infinity,
-        child: Stack(
-          children: [
-            LegendItem(
-              text: title,
-              color: color,
-              transitionPercent: 1.0,
-            ),
-            FadeTransition(
-              opacity: animation,
-              child: AppBar(
-                title: Text(title),
-                centerTitle: true,
-                backgroundColor: const Color(0x00000000),
-                elevation: 0.0,
-                leading: Builder(
-                  builder: (BuildContext context) {
-                    return IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      tooltip:
-                          MaterialLocalizations.of(context).closeButtonLabel,
-                    );
-                  },
+      backgroundColor: const Color(0xFFFFFFFF),
+      body: Stack(
+        children: [
+          Stack(
+            children: [
+              LegendItem(
+                text: title,
+                color: color,
+                transitionPercent: 1.0,
+                onSharedElementAnimationComplete: () {
+                  controller.forward();
+                },
+              ),
+              FadeTransition(
+                opacity: animation,
+                child: AppBar(
+                  title: Text(title),
+                  centerTitle: true,
+                  backgroundColor: const Color(0x00000000),
+                  elevation: 0.0,
+                  leading: Builder(
+                    builder: (BuildContext context) {
+                      return IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          controller.reverse();
+                          Navigator.of(context).pop();
+                        },
+                        tooltip:
+                            MaterialLocalizations.of(context).closeButtonLabel,
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(16.0, 116.0, 16.0, 16.0),
+            child: Text("Hello!"),
+          ),
+        ],
       ),
     );
   }
