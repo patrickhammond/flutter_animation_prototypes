@@ -39,20 +39,17 @@ class LegendDetailScreen extends StatefulWidget {
   LegendDetailScreen({Key key, @required this.title, @required this.color});
 
   @override
-  State<StatefulWidget> createState() =>
-      _LegendDetailScreenState(title: title, color: color);
+  State<StatefulWidget> createState() => _LegendDetailScreenState(title: title, color: color);
 }
 
-class _LegendDetailScreenState extends State<LegendDetailScreen>
-    with TickerProviderStateMixin {
+class _LegendDetailScreenState extends State<LegendDetailScreen> with TickerProviderStateMixin {
   final String title;
   final Color color;
 
   AnimationController controller;
   Animation<double> animation;
 
-  _LegendDetailScreenState(
-      {Key key, @required this.title, @required this.color});
+  _LegendDetailScreenState({Key key, @required this.title, @required this.color});
 
   @override
   void initState() {
@@ -98,8 +95,7 @@ class _LegendDetailScreenState extends State<LegendDetailScreen>
                           controller.reverse();
                           Navigator.of(context).pop();
                         },
-                        tooltip:
-                            MaterialLocalizations.of(context).closeButtonLabel,
+                        tooltip: MaterialLocalizations.of(context).closeButtonLabel,
                       );
                     },
                   ),
@@ -156,8 +152,7 @@ class DiagnosisCategoriesGrid extends StatelessWidget {
 }
 
 class CustomMaterialPageRoute extends MaterialPageRoute {
-  CustomMaterialPageRoute({Key key, WidgetBuilder builder})
-      : super(builder: builder);
+  CustomMaterialPageRoute({Key key, WidgetBuilder builder}) : super(builder: builder);
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 750);

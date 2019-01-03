@@ -25,8 +25,7 @@ class LegendItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
-    var height =
-        DEFAULT_HEIGHT + (screenHeight - DEFAULT_HEIGHT) * transitionPercent;
+    var height = DEFAULT_HEIGHT + (screenHeight - DEFAULT_HEIGHT) * transitionPercent;
 
     return GestureDetector(
       child: Hero(
@@ -39,11 +38,8 @@ class LegendItem extends StatelessWidget {
           ),
         ),
         tag: text + "_indicator",
-        flightShuttleBuilder: (BuildContext flightContext,
-            Animation<double> animation,
-            HeroFlightDirection flightDirection,
-            BuildContext fromHeroContext,
-            BuildContext toHeroContext) {
+        flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation,
+            HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
           animation.addStatusListener((AnimationStatus status) {
             if (status == AnimationStatus.completed) {
               Function.apply(onSharedElementAnimationComplete, []);
@@ -71,11 +67,7 @@ class _LegendWidget extends StatelessWidget {
   final Color color;
   final double transitionPercent; // 0.0 to 1.0
 
-  _LegendWidget(
-      {Key key,
-      @required this.text,
-      @required this.color,
-      this.transitionPercent = 0.0});
+  _LegendWidget({Key key, @required this.text, @required this.color, this.transitionPercent = 0.0});
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +75,7 @@ class _LegendWidget extends StatelessWidget {
     var inverseTransitionPercent = 1.0 - transitionPercent;
 
     // 24.0 --> 0.0
-    var borderRadius = Radius.circular(
-        LegendItem.DEFAULT_HEIGHT / 2.0 * inverseTransitionPercent);
+    var borderRadius = Radius.circular(LegendItem.DEFAULT_HEIGHT / 2.0 * inverseTransitionPercent);
 
     // 1.0 --> 0.0 (@ 8x)
     var labelOpacity = max(0.0, 1.0 - 8 * transitionPercent);
@@ -159,13 +150,10 @@ class _LegendIndicator extends StatelessWidget {
     var inverseTransitionPercent = 1.0 - transitionPercent;
 
     var screenWidth = MediaQuery.of(context).size.width;
-    var scaledCircleSize =
-        circleSize * inverseTransitionPercent; // 20.0 --> 0.0
+    var scaledCircleSize = circleSize * inverseTransitionPercent; // 20.0 --> 0.0
 
-    var width =
-        scaledCircleSize + screenWidth * transitionPercent; // 20.0 --> sw
-    var height = min(maxHeight,
-        scaledCircleSize + (maxHeight * transitionPercent)); // 20.0 --> 125.0
+    var width = scaledCircleSize + screenWidth * transitionPercent; // 20.0 --> sw
+    var height = min(maxHeight, scaledCircleSize + (maxHeight * transitionPercent)); // 20.0 --> 125.0
 
     return Container(
       child: CustomPaint(
@@ -187,8 +175,7 @@ class _LegendPainter extends CustomPainter {
 
   final Paint _paint = Paint();
 
-  _LegendPainter(
-      {Key key, @required this.color, @required this.transitionPercent}) {
+  _LegendPainter({Key key, @required this.color, @required this.transitionPercent}) {
     _paint.color = color;
   }
 
@@ -198,8 +185,8 @@ class _LegendPainter extends CustomPainter {
 
     var overScaleWidth = size.width * .35 * transitionPercent;
     var translateHeight = size.height * .4 * transitionPercent;
-    var adjusted = Rect.fromLTRB(rect.left - overScaleWidth,
-        rect.top - translateHeight, rect.right + overScaleWidth, rect.bottom);
+    var adjusted =
+        Rect.fromLTRB(rect.left - overScaleWidth, rect.top - translateHeight, rect.right + overScaleWidth, rect.bottom);
 
     canvas.drawOval(adjusted, _paint);
   }
