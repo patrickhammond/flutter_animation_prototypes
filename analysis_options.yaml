@@ -1,0 +1,5 @@
+analyzer:
+  errors:
+    invalid_assignment: warning
+    missing_return: error
+    dead_code: warning

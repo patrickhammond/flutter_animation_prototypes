@@ -1,7 +1,7 @@
+import 'package:expanding_page_prototype/features/diagnosis_categories.dart';
+import 'package:expanding_page_prototype/widgets/layout.dart';
 import 'package:expanding_page_prototype/widgets/legend.dart';
 import 'package:flutter/material.dart';
-
-final RouteObserver<PageRoute> _routeObserver = RouteObserver<PageRoute>();
 
 void main() {
   runApp(MyApp());
@@ -120,115 +120,34 @@ class _LegendDetailScreenState extends State<LegendDetailScreen>
 class DiagnosisCategoriesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Table(
-      children: [
-        TableRow(
-          children: [
-            DiagnosisCategoriesButton(
-              text: "Red",
-              color: Color(0xFFf56166),
-              padding: EdgeInsets.fromLTRB(20.0, 20.0, 10.0, 10.0),
-            ),
-            DiagnosisCategoriesButton(
-              text: "Yellow",
-              color: Color(0xFFf7cf7c),
-              padding: EdgeInsets.fromLTRB(10.0, 20.0, 20.0, 10.0),
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            DiagnosisCategoriesButton(
-              text: "Sea",
-              color: Color(0xFF68e4c8),
-              padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
-            ),
-            DiagnosisCategoriesButton(
-              text: "Orange",
-              color: Color(0xFFED825A),
-              padding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            DiagnosisCategoriesButton(
-              text: "Teal",
-              color: Color(0xFF30b4d6),
-              padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
-            ),
-            DiagnosisCategoriesButton(
-              text: "Purple",
-              color: Color(0xFF766ec9),
-              padding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            DiagnosisCategoriesButton(
-              text: "Red2",
-              color: Color(0xFFe84558),
-              padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
-            ),
-            DiagnosisCategoriesButton(
-              text: "Blue",
-              color: Color(0xFF30a5fe),
-              padding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            DiagnosisCategoriesButton(
-              text: "Moss",
-              color: Color(0xFF6ab0b0),
-              padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
-            ),
-            Text("")
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class DiagnosisCategoriesButton extends StatelessWidget {
-  final String text;
-  final Color color;
-  final EdgeInsets padding;
-
-  DiagnosisCategoriesButton(
-      {Key key,
-      @required this.text,
-      @required this.color,
-      @required this.padding});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      child: SizedBox(
-        child: LegendItem(
-          text: text,
-          color: color,
-          onTap: () {
-            navigateToDetails(context);
-          },
-        ),
-        height: 52.0,
-      ),
-      padding: padding,
+    return FixedGridLayout(
+      columns: 2,
+      childHeight: LegendItem.DEFAULT_HEIGHT,
+      horizontalPadding: 10.0,
+      verticalPadding: 10.0,
+      children: DiagnosisCategories.diagnosisCategories.map((category) {
+        return LayoutId(
+          id: category.title,
+          child: LegendItem(
+            text: category.title,
+            color: category.color,
+            onTap: () {
+              navigateToDetails(context, category);
+            },
+          ),
+        );
+      }).toList(growable: false),
     );
   }
 
-  void navigateToDetails(BuildContext context) {
+  void navigateToDetails(BuildContext context, DiagnosisCategory category) {
     Navigator.push(
       context,
       CustomMaterialPageRoute(
         builder: (_) {
           return LegendDetailScreen(
-            title: text,
-            color: color,
+            title: category.title,
+            color: category.color,
           );
         },
       ),
