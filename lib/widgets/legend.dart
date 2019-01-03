@@ -38,8 +38,13 @@ class LegendItem extends StatelessWidget {
           ),
         ),
         tag: text + "_indicator",
-        flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation,
-            HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+        flightShuttleBuilder: (
+          BuildContext flightContext,
+          Animation<double> animation,
+          HeroFlightDirection flightDirection,
+          BuildContext fromHeroContext,
+          BuildContext toHeroContext,
+        ) {
           animation.addStatusListener((AnimationStatus status) {
             if (status == AnimationStatus.completed) {
               Function.apply(onSharedElementAnimationComplete, []);
@@ -95,9 +100,10 @@ class _LegendWidget extends StatelessWidget {
                 transitionPercent: transitionPercent,
               ),
               delegate: BiasLayoutChildDelegate(
-                  leftOffset: 16.0 * inverseTransitionPercent,
-                  horizontalBias: 0.5 * transitionPercent,
-                  verticalBias: 0.5 * inverseTransitionPercent),
+                leftOffset: 16.0 * inverseTransitionPercent,
+                horizontalBias: 0.5 * transitionPercent,
+                verticalBias: 0.5 * inverseTransitionPercent,
+              ),
             ),
             CustomSingleChildLayout(
               child: Opacity(
@@ -108,9 +114,10 @@ class _LegendWidget extends StatelessWidget {
                 ),
               ),
               delegate: BiasLayoutChildDelegate(
-                  leftOffset: 46.0 * inverseTransitionPercent,
-                  horizontalBias: 0.5 * transitionPercent,
-                  verticalBias: 0.5 * inverseTransitionPercent),
+                leftOffset: 46.0 * inverseTransitionPercent,
+                horizontalBias: 0.5 * transitionPercent,
+                verticalBias: 0.5 * inverseTransitionPercent,
+              ),
             ),
           ],
         ),
@@ -185,8 +192,12 @@ class _LegendPainter extends CustomPainter {
 
     var overScaleWidth = size.width * .35 * transitionPercent;
     var translateHeight = size.height * .4 * transitionPercent;
-    var adjusted =
-        Rect.fromLTRB(rect.left - overScaleWidth, rect.top - translateHeight, rect.right + overScaleWidth, rect.bottom);
+    var adjusted = Rect.fromLTRB(
+      rect.left - overScaleWidth,
+      rect.top - translateHeight,
+      rect.right + overScaleWidth,
+      rect.bottom,
+    );
 
     canvas.drawOval(adjusted, _paint);
   }
