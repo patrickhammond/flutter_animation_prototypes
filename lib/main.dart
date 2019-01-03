@@ -113,7 +113,40 @@ class _LegendDetailScreenState extends State<LegendDetailScreen> with TickerProv
   }
 }
 
-class DiagnosisCategoriesGrid extends StatelessWidget {
+class DiagnosisCategoriesGrid extends StatefulWidget {
+  _DiagnosisCategoriesGridState createState() => _DiagnosisCategoriesGridState();
+}
+
+class _DiagnosisCategoryHolder {
+  final DiagnosisCategory diagnosisCategory;
+
+  final AnimationController controller;
+  final Animation<double> scaleAnimation;
+
+  _DiagnosisCategoryHolder({this.diagnosisCategory, this.controller, this.scaleAnimation});
+}
+
+class _DiagnosisCategoriesGridState extends State<DiagnosisCategoriesGrid> with TickerProviderStateMixin {
+  List<_DiagnosisCategoryHolder> diagnosisCategoryHolders;
+
+  @override
+  void initState() {
+    super.initState();
+    diagnosisCategoryHolders = DiagnosisCategories.diagnosisCategories.map((category) {
+      AnimationController controller = AnimationController(
+        duration: const Duration(milliseconds: 100),
+        vsync: this,
+      );
+      Animation<double> scaleAnimation = controller.drive(Tween(begin: 1.0, end: 1.1));
+
+      return _DiagnosisCategoryHolder(
+        diagnosisCategory: category,
+        controller: controller,
+        scaleAnimation: scaleAnimation,
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FixedGridLayout(
@@ -121,19 +154,28 @@ class DiagnosisCategoriesGrid extends StatelessWidget {
       childHeight: LegendItem.DEFAULT_HEIGHT,
       horizontalPadding: 10.0,
       verticalPadding: 10.0,
-      children: DiagnosisCategories.diagnosisCategories.map((category) {
+      children: diagnosisCategoryHolders.map((categoryHolder) {
         return LayoutId(
-          id: category.title,
-          child: LegendItem(
-            text: category.title,
-            color: category.color,
-            onTap: () {
-              navigateToDetails(context, category);
-            },
+          id: categoryHolder.diagnosisCategory.title,
+          child: ScaleTransition(
+            scale: categoryHolder.scaleAnimation,
+            child: LegendItem(
+              text: categoryHolder.diagnosisCategory.title,
+              color: categoryHolder.diagnosisCategory.color,
+              onTap: () {
+                bounce(context, categoryHolder);
+              },
+            ),
           ),
         );
       }).toList(growable: false),
     );
+  }
+
+  void bounce(BuildContext context, _DiagnosisCategoryHolder holder) async {
+    await holder.controller.forward();
+    await holder.controller.reverse();
+    navigateToDetails(context, holder.diagnosisCategory);
   }
 
   void navigateToDetails(BuildContext context, DiagnosisCategory category) {
@@ -155,5 +197,5 @@ class CustomMaterialPageRoute extends MaterialPageRoute {
   CustomMaterialPageRoute({Key key, WidgetBuilder builder}) : super(builder: builder);
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 750);
+  Duration get transitionDuration => Duration(milliseconds: 7500);
 }
