@@ -159,8 +159,14 @@ class _LegendIndicator extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     var scaledCircleSize = circleSize * inverseTransitionPercent; // 20.0 --> 0.0
 
-    var width = scaledCircleSize + screenWidth * transitionPercent; // 20.0 --> sw
+    //var width = scaledCircleSize + screenWidth * transitionPercent; // 20.0 --> sw
     var height = min(maxHeight, scaledCircleSize + (maxHeight * transitionPercent)); // 20.0 --> 125.0
+    var width = height;
+
+    const ovalThreshold = 0.5;
+    if (transitionPercent >= ovalThreshold) {
+      width = width + (screenWidth - width) * (transitionPercent - ovalThreshold) / ovalThreshold;
+    }
 
     return Container(
       child: CustomPaint(
