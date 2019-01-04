@@ -197,5 +197,5 @@ class CustomMaterialPageRoute extends MaterialPageRoute {
   CustomMaterialPageRoute({Key key, WidgetBuilder builder}) : super(builder: builder);
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 7500);
+  Duration get transitionDuration => Duration(milliseconds: 750);
 }
