@@ -157,14 +157,22 @@ class _DiagnosisCategoriesGridState extends State<DiagnosisCategoriesGrid> with 
       children: diagnosisCategoryHolders.map((categoryHolder) {
         return LayoutId(
           id: categoryHolder.diagnosisCategory.title,
-          child: ScaleTransition(
-            scale: categoryHolder.scaleAnimation,
-            child: LegendItem(
-              text: categoryHolder.diagnosisCategory.title,
-              color: categoryHolder.diagnosisCategory.color,
-              onTap: () {
-                bounce(context, categoryHolder);
-              },
+          child: GestureDetector(
+            onTapDown: (TapDownDetails details) {
+              categoryHolder.controller.forward();
+            },
+            onTapCancel: () {
+              categoryHolder.controller.reverse();
+            },
+            onTap: () {
+              bounce(context, categoryHolder);
+            },
+            child: ScaleTransition(
+              scale: categoryHolder.scaleAnimation,
+              child: LegendItem(
+                text: categoryHolder.diagnosisCategory.title,
+                color: categoryHolder.diagnosisCategory.color,
+              ),
             ),
           ),
         );

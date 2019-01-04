@@ -6,16 +6,12 @@ import 'package:flutter/material.dart';
 class LegendItem extends StatelessWidget {
   static const DEFAULT_HEIGHT = 48.0;
 
-  static _doNothingTapDown() {}
-
   final String text;
   final Color color;
   final double transitionPercent; // 0.0 to 1.0
   final double shortDistanceFromTop;
   final double longDistanceFromTop;
   final Function onSharedElementAnimationComplete;
-  final GestureTapCallback onTap;
-  final GestureTapCallback onLongPress;
 
   LegendItem(
       {Key key,
@@ -24,55 +20,49 @@ class LegendItem extends StatelessWidget {
       this.transitionPercent = 0.0,
       this.shortDistanceFromTop = 80.0,
       this.longDistanceFromTop = 100.0,
-      this.onSharedElementAnimationComplete,
-      this.onTap = _doNothingTapDown,
-      this.onLongPress = _doNothingTapDown});
+      this.onSharedElementAnimationComplete});
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var height = DEFAULT_HEIGHT + (screenHeight - DEFAULT_HEIGHT) * transitionPercent;
 
-    return GestureDetector(
-      child: Hero(
-        child: SizedBox(
-          height: height,
-          child: _LegendWidget(
-            text: text,
-            color: color,
-            transitionPercent: transitionPercent,
-            shortDistanceFromTop: shortDistanceFromTop,
-            longDistanceFromTop: longDistanceFromTop,
-          ),
+    return Hero(
+      child: SizedBox(
+        height: height,
+        child: _LegendWidget(
+          text: text,
+          color: color,
+          transitionPercent: transitionPercent,
+          shortDistanceFromTop: shortDistanceFromTop,
+          longDistanceFromTop: longDistanceFromTop,
         ),
-        tag: text + "_indicator",
-        flightShuttleBuilder: (
-          BuildContext flightContext,
-          Animation<double> animation,
-          HeroFlightDirection flightDirection,
-          BuildContext fromHeroContext,
-          BuildContext toHeroContext,
-        ) {
-          animation.addStatusListener((AnimationStatus status) {
-            if (status == AnimationStatus.completed) {
-              Function.apply(onSharedElementAnimationComplete, []);
-            }
-          });
-
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (BuildContext context, Widget child) => LegendItem(
-                  text: text,
-                  color: color,
-                  transitionPercent: animation.value,
-                  shortDistanceFromTop: shortDistanceFromTop,
-                  longDistanceFromTop: longDistanceFromTop,
-                ),
-          );
-        },
       ),
-      onTap: onTap,
-      onLongPress: onLongPress,
+      tag: text + "_indicator",
+      flightShuttleBuilder: (
+        BuildContext flightContext,
+        Animation<double> animation,
+        HeroFlightDirection flightDirection,
+        BuildContext fromHeroContext,
+        BuildContext toHeroContext,
+      ) {
+        animation.addStatusListener((AnimationStatus status) {
+          if (status == AnimationStatus.completed) {
+            Function.apply(onSharedElementAnimationComplete, []);
+          }
+        });
+
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (BuildContext context, Widget child) => LegendItem(
+                text: text,
+                color: color,
+                transitionPercent: animation.value,
+                shortDistanceFromTop: shortDistanceFromTop,
+                longDistanceFromTop: longDistanceFromTop,
+              ),
+        );
+      },
     );
   }
 }
